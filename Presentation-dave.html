@@ -5,10 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake-Spiel</title>
+   <script src="/js/index.js"></script>
+     
+   <style>
+    body {
+        
+      border: 10 px groove rgb(61, 61, 26);
+      background-color: rgb(22, 21, 23);
+    }
+    
+    canvas {
+      
+      border: 20px groove rgb(200, 153, 71);
+      
+      border-radius: 15px, 15px;
+      
+      
+      
+    }
+    #snakeboard {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   
-
-    <style>
-      #snakeboard {
+  #score{
+    color: #bf0b0b;
+    text-align: center;
+    font-size: 5em;
+  }
+  #snakeboard {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -16,38 +43,42 @@
       }
       #score {
         text-align: center;
-        font-size: 70px;
-        color: white;
+        font-size: 140px;
       } 
-      
-      body {
-          
-          
-          background-color: rgb(65, 164, 78);
-        }
-        
-        canvas {
-          
-          border-radius: 5%;
-          border: 20px groove rgb(200, 71, 103);
-     
-        }
-    </style>
-     
   
+
+    </style>
 </head>
  <body>
-
+<!--
   <div id="score">0</div>
-  <canvas id="snakeboard" width="720" height="500">
+
+  
+  <canvas id="snakeboard" width="710" height="470"></canvas>
+  
+   <div id="score">0</div>
+  <canvas id="snakeboard" width="400" height="400"></canvas> --> 
+  <div id="score">0</div>
+  <canvas id="snakeboard" width="720" height="500"></canvas>
+
+  <style>
+    /* #snakeboard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #score {
+      text-align: center;
+      font-size: 140px;
+    } */
     
-  </canvas>
- 
+  </style>
   <script>
     const board_border = 'black';
     const board_background = "lightgrey";
     const snake_col = 'green';
-    const snake_border = 'darkgreen';
+    const snake_border = '1em ';
     
     let snake = [
       {x: 200, y: 200},
@@ -58,28 +89,28 @@
     ]
   
     let score = 0;
-    // Wahr, wenn die Richtung geändert wird
+    // True if changing direction
     let changing_direction = false;
-      // Horizontale Geschwindigkeit
+    // Horizontal velocity
     let food_x;
     let food_y;
     let dx = 10;
-       // Vertikale Geschwindigkeit
+    // Vertical velocity
     let dy = 0;
     
     
-       // Canvas-Element abrufen
+    // Get the canvas element
     const snakeboard = document.getElementById("snakeboard");
-       // Einen zweidimensionalen Zeichnungskontext zurückgeben
+    // Return a two dimensional drawing context
     const snakeboard_ctx = snakeboard.getContext("2d");
-    // Spiel beginnen
+    // Start game
     main();
   
     gen_food();
   
     document.addEventListener("keydown", change_direction);
     
-      // Hauptfunktion wiederholt aufgerufen, um das Spiel am Laufen zu halten
+    // main function called repeatedly to keep the game running
     function main() {
   
         if (has_game_ended()) return;
@@ -89,29 +120,27 @@
         clear_board();
         drawFood();
         move_snake();
-        // WiederholenawSnake();
+        drawSnake();
         // Repeat
         main();
       }, 100)
     }
     
-      // zeichne einen Rand um die Leinwand
+    // draw a border around the canvas
     function clear_board() {
-       // Wähle die Farbe, um die Zeichnung zu füllen
+      //  Select the colour to fill the drawing
       snakeboard_ctx.fillStyle = board_background;
-     // Wählen Sie die Farbe für den Rand der Leinwand( canvas)
+      //  Select the colour for the border of the canvas
       snakeboard_ctx.strokestyle = board_border;
-    
+      // Draw a "filled" rectangle to cover the entire canvas
       snakeboard_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
-     // Zeichnen Sie ein "gefülltes" Rechteck, um die gesamte Leinwand zu bedecken
-      // Zeichnen Sie einen "Rand" um die gesamte Leinwand
+      // Draw a "border" around the entire canvas
       snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
     }
     
-      
+    // Draw the snake on the canvas
     function drawSnake() {
-          
-    // Zeichne die Schlange auf die Leinwand
+      // Draw each part
       snake.forEach(drawSnakePart)
     }
   
@@ -122,18 +151,17 @@
       snakeboard_ctx.strokeRect(food_x, food_y, 10, 10);
     }
     
-    // Zeichne einen Schlangenteil
+    // Draw one snake part
     function drawSnakePart(snakePart) {
   
-            // Legen Sie die Farbe des Schlangenteils fest
+      // Set the colour of the snake part
       snakeboard_ctx.fillStyle = snake_col;
-      // Legen Sie die Rahmenfarbe des Schlangenteils fest
+      // Set the border colour of the snake part
       snakeboard_ctx.strokestyle = snake_border;
-        // Zeichne ein "gefülltes" Rechteck, um den Schlangenteil an den Koordinaten darzustellen
- 
-         // Das Teil wird lokalisiert
+      // Draw a "filled" rectangle to represent the snake part at the coordinates
+      // the part is located
       snakeboard_ctx.fillRect(snakePart.x, snakePart.y, 10, 10);
-       // Zeichne einen Rahmen um den Schlangenteil
+      // Draw a border around the snake part
       snakeboard_ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
     }
   
@@ -153,11 +181,11 @@
     }
   
     function gen_food() {
-    // Erzeuge eine Zufallszahl der x-Koordinate des Essens
+      // Generate a random number the food x-coordinate
       food_x = random_food(0, snakeboard.width - 10);
-       // Erzeuge eine Zufallszahl für die Y-Koordinate des Essens
+      // Generate a random number for the food y-coordinate
       food_y = random_food(0, snakeboard.height - 10);
-        // Wenn der neue Nahrungsort dort ist, wo sich die Schlange gerade befindet, erzeuge einen neuen Nahrungsort
+      // if the new food location is where the snake currently is, generate a new food location
       snake.forEach(function has_snake_eaten_food(part) {
         const has_eaten = part.x == food_x && part.y == food_y;
         if (has_eaten) gen_food();
@@ -170,7 +198,7 @@
       const UP_KEY = 38;
       const DOWN_KEY = 40;
       
-    // Verhindere, dass die Schlange umkehrt
+    // Prevent the snake from reversing
     
       if (changing_direction) return;
       changing_direction = true;
@@ -198,20 +226,20 @@
     }
   
     function move_snake() {
-     // Erstellen Sie den Kopf der neuen Schlange
+      // Create the new Snake's head
       const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-         // Füge den neuen Kopf am Anfang des Schlangenkörpers hinzu
+      // Add the new head to the beginning of snake body
       snake.unshift(head);
       const has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
       if (has_eaten_food) {
-          // Punktzahl erhöhen
+        // Increase score
         score += 10;
-        // Punktzahl auf dem Bildschirm anzeigen
+        // Display score on screen
         document.getElementById('score').innerHTML = score;
-        // Generiere einen neuen Lebensmittelstandort
+        // Generate new food location
         gen_food();
       } else {
-    // Entfernen Sie den letzten Teil des Schlangenkörpers
+        // Remove the last part of snake body
         snake.pop();
       }
     }
